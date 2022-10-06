@@ -1,9 +1,10 @@
-const profile = require('../models/profile');
+const user = require('../models/user');
 //---------------GET ALL USERS--------------//
 exports.Getusers = async (req, res) => {
     try {
-      const users = await profile.find();
+      const users = await user.find();
       res.status(200).send({ msg: "all users", users });
+      
     } catch (error) {
       res.status(500).send("couldn't get users");
     }
@@ -11,7 +12,7 @@ exports.Getusers = async (req, res) => {
   //------------DELETE USER-------------//
   exports.Deleteuser = async (req, res) => {
     try {
-      const deleuser = await profile.findByIdAndDelete(req.params.id);
+      const deleuser = await user.findByIdAndDelete(req.params.id);
       res.status(200).send({ msg: "user deleted", deleuser });
     } catch (error) {
       res.status(500).send("could not delete user");
@@ -20,7 +21,7 @@ exports.Getusers = async (req, res) => {
   //-----------UPDATE USER-----------------//
   exports.Updateuser = async (req, res) => {
     try {
-      const edituser = await profile.findByIdAndUpdate(
+      const edituser = await user.findByIdAndUpdate(
         req.params.id,
         {
           $set: { ...req.body },

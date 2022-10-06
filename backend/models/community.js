@@ -5,19 +5,27 @@ const community= new mongoose.Schema({
         required:true,
         unique:true
     },
-   picture:{
-    
+    profileImage:{
+      type:String
+  },
+  coverImage:{
+      type:String
+  },
+   description:{
+    type:String,
+    required:true,
    },
    
-    isAdmin:Boolean,
-   createdby:{
-    type:mongoose.Schema.Types.ObjectId,
-    ref:'user'
- },
- createdby:{
-    type:mongoose.Schema.Types.ObjectId,
-    ref:'user'
- }
+
+      posts :[{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'post'
+          }],
+
+    ownerId:{
+     type:mongoose.Schema.Types.ObjectId,
+     ref:'user'
+      },
     
 })
 module.exports = mongoose.model('community',community);

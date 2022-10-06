@@ -3,10 +3,15 @@ import { Button, Form } from 'react-bootstrap';
 import {useDispatch } from 'react-redux';
 import { useNavigate} from 'react-router-dom';
 import { register } from '../redux/Action/authActions';
+import DatePicker from 'react-datepicker';
+import "react-datepicker/dist/react-datepicker.css";
 
 const Register = () => {
     const dispatch = useDispatch()
     const navigate = useNavigate()
+
+    const [selectedDate,setSelectedDate] = useState(new Date())
+
     const [firstname,setFirstame] = useState('')
     const [lastname,setLastname] = useState('')
     const [email,setEmail] = useState('')
@@ -43,8 +48,14 @@ const Register = () => {
           <div class="input_field"> <span><i aria-hidden="true" class="fa fa-lock"></i></span>
           <Form.Control className='register-input' type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)}  required/>
           </div>
-          </div>        
-            	{/* <div class="input_field radio_option">
+          </div>    
+          {/* <div>
+          <Form.Label>Birthday</Form.Label>
+          <DatePicker selected={selectedDate} onChanger={(date)=>setSelectedDate(date)} />
+          </div>  */}
+
+
+    	{/* <div class="input_field radio_option">
                 <h5>Gender</h5>
                 <div class="label">
                 <input type="radio" name="radiogroup1" id="rd1"/>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
@@ -16,21 +16,32 @@ import NorthEastIcon from '@mui/icons-material/NorthEast';
 import SignalCellularAltIcon from '@mui/icons-material/SignalCellularAlt';
 import DeleteOutlineRoundedIcon from '@mui/icons-material/DeleteOutlineRounded';
 import { Form } from "react-bootstrap";
-import { Link, Navigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { logout } from "../redux/Action/authActions";
+import { getcommunities, getOneCommunity } from "../redux/Action/communityActions";
+
+
 const Navigation = () => {
-  const user = useSelector((state) => state.user);
+  const user = useSelector((state) => state.authReducer.user);
   // const auth = useSelector((state) => state.auth);
   const [show, setShow] = useState(false);
 
-
-  // ---------------//
  const dispatch = useDispatch();
+ const Navigate =useNavigate();
+  // ---------------//
+
+ useEffect(()=>{
+   dispatch(getcommunities())
+    },[])
+    const communities = useSelector((state) => state.communityReducer.communities);
+  // ---------------//
  const handleLogout = (e) => {
      e.preventDefault();
    dispatch(logout())
-   Navigate('/') 
+   Navigate('/login') 
  };
+
+
   return (
     <div className="nav-bar">
     {!user ? (
@@ -65,6 +76,14 @@ const Navigation = () => {
           </Form>
           <NorthEastIcon className='icons'/>
           <SignalCellularAltIcon className='icons'/>
+          <Form.Select className="community_select" >
+              <option className="">----choose community----</option>
+          {communities?.map((community)=><option onClick={()=>{
+               dispatch(getOneCommunity())
+               Navigate('/community')
+               
+          }}> {community.name}</option>) } 
+              </Form.Select>
           <Avatar className='nav-profile-icon' src="/broken-image.jpg" onClick={()=>setShow(!show)} />
           {show && 
           <div className='setting-menu' >
@@ -72,7 +91,7 @@ const Navigation = () => {
             <div className='under-line'>
             <div className='use-profile'>
           <Avatar className='setting-profile-icon' src="/broken-image.jpg" />
-          <Nav.Link as={Link} to="/profile" >{user.firstname} {user.lastname} </Nav.Link>
+          <Nav.Link as={Link} to="/profile" > {user.firstname} {user.lastname}</Nav.Link>
           </div>
             </div>
          
@@ -92,9 +111,9 @@ const Navigation = () => {
           </Nav>
         </Container>
       </Navbar>
-        )
-        }
-   
+         )
+        } 
+    
           
       
          

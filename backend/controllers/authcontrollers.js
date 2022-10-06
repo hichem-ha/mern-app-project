@@ -46,8 +46,9 @@ exports.Login = async(req,res) => {
         return res.status(400).send({errors:[{msg:'Bad Credentials'}]});
       }
         //check jwt
-        const payload={id : founduser._id , isAdmin:founduser.isAdmin};
-        const token = jwt.sign(payload,process.env.secretkey);
+        const payload={id : founduser._id };
+     
+        const token = jwt.sign(payload,process.env.secretkey,founduser.isAdmin);
       res.status(200).send({msg:'Loging With Success ', founduser , token});
    
 
@@ -57,10 +58,6 @@ exports.Login = async(req,res) => {
 };
  //---------GET CURRENT USER------------//
 exports.current=async(req,res)=>{
-    try {
-        const user=await user.findById(req.user.id)
-        res.send(user)
-    } catch (error) {
-        res.status(500).send("server error")
-    }
-}
+    
+        res.send({user:req.user})
+    } 

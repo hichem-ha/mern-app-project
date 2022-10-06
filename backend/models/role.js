@@ -8,10 +8,7 @@ const role= new mongoose.Schema({
         type:ObjectId,
         ref:"user"
     }],
-    role:{
-    type:String,
-    default:"user"
-    }
+    
   
    
     

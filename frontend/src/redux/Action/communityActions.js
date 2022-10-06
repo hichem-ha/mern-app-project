@@ -1,22 +1,53 @@
 import axios from "axios";
-import { ADD_COMMUNITY, GET_COMMUNITIES } from "../ActionTypes/communityTypes";
+import { ADD_COMMUNITY,  GET_COMMUNITIES, GET_ONE_COMMUNITY } from "../ActionTypes/communityTypes";
 
-//-----------GET COMMINITIES----------------//
-export const getcommunities = (data) => async (dispatch) => {
+//-----------GET COMMUNITIES----------------//
+export const getcommunities = () => async (dispatch) => {
+  const config = {
+    headers: {
+      token: localStorage.getItem("token"),
+    },
+  };
     try {
-      const res = await axios.get("/users/allcommunities", data);
+      const res = await axios.get("/users/allcommunities", config);
       dispatch({ type: GET_COMMUNITIES, payload: res.data });
     } catch (error) {
      
         console.log(error)
     }
   };
-  //-----------ADD COMMINITY----------------//
-export const addcommunity = (data) => async (dispatch) => {
+  //------------GET ONE COMMUNITY---------//
+  export const getOneCommunity = (id) => async (dispatch) => {
+    const config = {
+      headers: {
+        token: localStorage.getItem("token"),
+      },
+    };
+      try {
+        const res = await axios.get(`/users/oneCommunity/${id}`, config);
+        dispatch({ type: GET_ONE_COMMUNITY, payload: res.data });
+      } catch (error) {
+       
+          console.log(error)
+      }
+    };
+  //-----------ADD COMMUNITY----------------//
+export const addcommunity = (data,id) => async (dispatch) => {
     try {
-      const res = await axios.post("/users/addcommunity", data);
-      dispatch({ type: ADD_COMMUNITY, payload: res.data });
+      const res = await axios.post(`/users/addcommunity/${id}`, data);
+      dispatch(getcommunities());
     } catch (error) {
    console.log(error)
     }
   };
+  //----------UPDATE COMMUNITY-------------------//
+ 
+  // //----------DELETE COMMUNITY-----------------//
+  // export const deletecommunity = (data) => async (dispatch) => {
+  //   try {
+  //     const res = await axios.delete("/users/deletecommunity", data);
+  //     dispatch({ type: DELETE_COMMUNITY, payload: res.data });
+  //   } catch (error) {
+  //  console.log(error)
+  //   }
+  // };

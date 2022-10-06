@@ -1,11 +1,12 @@
 const express = require ('express');
 const { Register,Login ,current} = require('../controllers/authcontrollers');
-const { Addcomment, Deletecomment, Updatecomment, Getcomments } = require('../controllers/commentcontrollers');
-const { Addcommunity, Getcommunities, Deletecommunity, Updatecommunity } = require('../controllers/communitycontrollers');
-const { Addpost, Deletepost, Updatepost, Getposts, Likepost, Getpost } = require('../controllers/postcontrollers');
+const { Addcomment, Deletecomment, Updatecomment, Getcomments, GetOneComment } = require('../controllers/commentcontrollers');
+const { Addcommunity, Getcommunities, Deletecommunity, Updatecommunity, Getcommunity, GetOnecommunities, GetOnecommunity } = require('../controllers/communitycontrollers');
+const { Addpost, Deletepost, Updatepost, Getposts, Getpost, Likespost } = require('../controllers/postcontrollers');
 const {Getusers, Deleteuser, Updateuser}=require('../controllers/profilecontrollers')
 const {IsAuth} = require ('../middlewares/isAuth');
-const {admin} = require ('../middlewares/admin');
+const {isAdmin, canDeletePost, canEditPost, canDeletecomment, canEditcomment} = require ('../middlewares/admin');
+
 const {
     Validationlogin,
     Validationregister,
@@ -14,6 +15,8 @@ const {
     Validationpost,
     Validationcomment,
   } = require("../Middlewares/validation");
+const { upload } = require('../middlewares/upload');
+
 const userRoutes = express.Router();
 
 //--------AUTH--------//
@@ -23,43 +26,54 @@ userRoutes.post('/register' , Validationregister, Validation,Register);
 userRoutes.post('/login' , Validationlogin, Validation ,Login);
 //GET CURRENT USER
 userRoutes.get('/current' , IsAuth ,current );
+
 //-------------USER------------//
 // GET ALL USERS
-userRoutes.get("/all",Getusers);
+userRoutes.get("/all",IsAuth,Getusers);
 // DELETE USER
 userRoutes.delete("/delete/:id", IsAuth,Deleteuser);
 // UPDATE USER
 userRoutes.put("/edit/:id", IsAuth,Updateuser);
+
 //------------COMMUNITY----------//
 // ADD COMMUNITY
-userRoutes.post("/addcommunity",IsAuth,Validationcommunity,Validation,Addcommunity);
+userRoutes.post("/addcommunity/:id",IsAuth,Validationcommunity,Validation,Addcommunity);
 // GET ALL COMMUNITIES 
-userRoutes.get("/allcommunities", Getcommunities);
+userRoutes.get("/allcommunities", IsAuth,Getcommunities);
+// GET ONE COMMUNITY
+userRoutes.get("/oneCommunity/:id", IsAuth,GetOnecommunity);
+
 // DELETE COMMUNITY
-userRoutes.delete("/deletecommunity/:id", [IsAuth, admin],Deletecommunity);
+userRoutes.delete("/deletecommunity/:id", IsAuth,isAdmin, Deletecommunity);
 // UPDATE COMMUNITY 
-userRoutes.put("/editcommunity/:id",[IsAuth, admin] ,Updatecommunity);
+userRoutes.put("/editcommunity/:id",IsAuth, isAdmin, Updatecommunity);
+
 //---------------POST-------------//
 // ADD POST
-userRoutes.post("/addpost",Validationpost,Validation,Addpost);
+userRoutes.post("/addpost/:id/community/:id2",IsAuth,Validationpost,Validation,Addpost);//upload.single('image'),
 // GET ALL POSTS
-userRoutes.get("/allposts", Getposts);
-// GET COMMUNITY POSTS
-userRoutes.get("/communityposts",IsAuth ,Getpost);
+userRoutes.get("/allposts", IsAuth,Getposts);
+// GET ONE POST
+userRoutes.get("/getOnePost/:id",IsAuth ,Getpost);
 // DELETE POST
-userRoutes.delete("/deletepost/:id", [IsAuth, admin],Deletepost);
+userRoutes.delete("/deletepost/:id", IsAuth,canDeletePost,Deletepost);
 // UPDATE POST
-userRoutes.put("/editpost/:id", IsAuth,Updatepost);
+userRoutes.put("/editpost/:id",IsAuth,canEditPost,Updatepost);
+//LIKE POST
+userRoutes.patch("/likespost/:id",IsAuth,Likespost);
+
 
 //--------------COMMENT--------------//
-// ADD COMMENT
-userRoutes.post("/addcomment", Validationcomment,Validation,Addcomment);
+// ADD COMMENT:
+userRoutes.post("/addcomment/:id/post/:id2", IsAuth,Validationcomment,Validation,Addcomment);
+//
+userRoutes.get("/getcomment/:id", IsAuth,GetOneComment);
 // GET ALL COMMENTS
-userRoutes.get("/allcomments", Getcomments);
+userRoutes.get("/allcomments", IsAuth,Getcomments);
 // DELETE COMMENT
-userRoutes.delete("/deletecomment/:id", [IsAuth, admin],Deletecomment);
+userRoutes.delete("/deletecomment/:id", IsAuth,canDeletecomment,Deletecomment);
 // UPDATE COMMENT
-userRoutes.put("/editcomment/:id",IsAuth,Updatecomment);
+userRoutes.put("/editcomment/:id",IsAuth,canEditcomment,Updatecomment);
 
 
 

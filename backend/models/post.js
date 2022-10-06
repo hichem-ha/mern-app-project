@@ -1,37 +1,43 @@
 const mongoose = require ('mongoose')
 const post= new mongoose.Schema({
-      postedBy:{
-        type:mongoose.Schema.ObjectId,
+      creatorId:{
+        type:mongoose.Schema.Types.ObjectId,
         ref:'user'
       },
-      // like:{
-      //   type:String,
-      //    required:true
-      //  },
-      postedIn:{
-        type:mongoose.Schema.ObjectId,
-         ref:'community'
+      createdIn:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'community'
       },
-    title:{
+    
+      title:{
         type:String,
         required:true,
+    },
+    community:{
+      type:String,
+      required:true
     },
 
     body:{
         type:String,
         required:true,
     },
+    // image:{
+    //   type:String
+    // },
+    comments :[{
+      type:mongoose.Schema.ObjectId,
+      ref:'comment'
+        }],
 
-    // // image:{
-    // //     data:Buffer,
-    // //    contentType:String 
-    // // },
     //----------------------
-    comments :[{ type:mongoose.Schema.ObjectId, ref:'comment'}],
+     
     
-    // likes:[{ type:mongoose.Schema.ObjectId, ref:'like'}],
-
-      createdAt:{
+    // likeCount:{ 
+    //   type:Number, 
+    //   default:0
+    // },
+     createdAt:{
         type:Date,
         default:Date.now
       }

@@ -11,6 +11,7 @@ import { useDispatch } from 'react-redux';
 import{ useEffect } from 'react';
 import { get_current } from './redux/Action/authActions';
 import Community from './components/Community';
+import { getposts } from './redux/Action/postActions';
 
 function App() {
   const dispatch = useDispatch();
@@ -22,7 +23,7 @@ function App() {
     <Navigation/> 
     <Routes>
     <Route path="/login" element={<Login />} />
-    <Route path="/register" element={<Register />} />
+    <Route path="/register" element={ <Register /> } />
     <Route path="/home" element={<Home />} />
     <Route path="/profile" element={<Profile />} />
     <Route path="/create-community" element={<CreateCommunity/>} />

@@ -13,6 +13,11 @@ const user= new mongoose.Schema({
         required:true,
         unique:true
     },
+    // birthday:{
+    //     type:String,
+    //     required:true,
+        
+    // },
     password:{
        type:String,
        required:true
@@ -20,6 +25,12 @@ const user= new mongoose.Schema({
     gender:{
         type:String,
         required:true
+    },
+    profileImage:{
+        type:String
+    },
+    coverImage:{
+        type:String
     }
     
 })
