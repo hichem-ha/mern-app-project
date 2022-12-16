@@ -31,7 +31,8 @@ const user= new mongoose.Schema({
     },
     coverImage:{
         type:String
-    }
+    },
+  
     
 })
 module.exports = mongoose.model('user',user);

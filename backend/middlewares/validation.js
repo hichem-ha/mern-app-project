@@ -21,13 +21,10 @@ exports.Validationcommunity =[
 
 ]
 exports.Validationpost =[
-  body("title", "please add a title").not().isEmpty(),
   body("body", "please add a body").not().isEmpty(),
-
 ]
 exports.Validationcomment =[
   body("textComment", "please add a textComment").not().isEmpty(),
-
 ]
 
 

@@ -3,14 +3,18 @@ import { Button, Form } from 'react-bootstrap';
 import {useDispatch } from 'react-redux';
 import { useNavigate} from 'react-router-dom';
 import { register } from '../redux/Action/authActions';
-import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
+import TextField from '@mui/material/TextField';
+import Grid from '@mui/material/Grid';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Checkbox from '@mui/material/Checkbox';
+
+
 
 const Register = () => {
     const dispatch = useDispatch()
     const navigate = useNavigate()
 
-    const [selectedDate,setSelectedDate] = useState(new Date())
 
     const [firstname,setFirstame] = useState('')
     const [lastname,setLastname] = useState('')
@@ -27,10 +31,9 @@ const Register = () => {
    
 
   return (
-    
-      <div class="form_wrapper">
+    <Form className='register'>
   <div class="form_container">
-    <div class="title_container">
+    <div class="title-container">
       <h2>Register</h2>
         <h5>It’s quick and easy.</h5>
     </div>
@@ -38,34 +41,63 @@ const Register = () => {
       <div class="">
         <form>
           <div class="input">
-        <div class="input_field"> <span><i aria-hidden="true" class="fa fa-user"></i></span>
-        <Form.Control className='register-input' type="text" placeholder="first name" onChange={(e) => setFirstame(e.target.value)} value={firstname}  required/>
-        <Form.Control className='register-input' type="text" placeholder="last name" onChange={(e) => setLastname(e.target.value)} value={lastname}  required/>
-              </div>
-          <div class="input_field"> <span><i aria-hidden="true" class="fa fa-envelope"></i></span>
-          <Form.Control className='register-input' type="email" placeholder="Enter email" value={email} onChange={(e) => setEmail(e.target.value)} required  />
-          </div>
-          <div class="input_field"> <span><i aria-hidden="true" class="fa fa-lock"></i></span>
-          <Form.Control className='register-input' type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)}  required/>
-          </div>
-          </div>    
-          {/* <div>
-          <Form.Label>Birthday</Form.Label>
-          <DatePicker selected={selectedDate} onChanger={(date)=>setSelectedDate(date)} />
-          </div>  */}
+        <div class="input_field"> 
+        <Grid container spacing={1}>
+        <Grid item xs={15} sm={6}>
+        <TextField
+         className='name'
+                  autoComplete="given-name"
+                  name="firstName"
+                  required
+                  fullWidth
+                  id="firstName"
+                  label="First Name"
+                  autoFocus
+                  onChange={(e) => setFirstame(e.target.value)} value={firstname}
+                />
+                </Grid>
+              <Grid item xs={12} sm={6}>
+                 <TextField
+                          className='name'
+                  autoComplete="given-name"
+                  name="lastName"
+                  required
+                  id="lastName"
+                  label="Last Name"
+                  autoFocus
+                  onChange={(e) => setLastname(e.target.value)} value={lastname}           
+                       />
+                       </Grid>
+                        </Grid>
+              
+                <TextField
+                className='register-input'
+                  required
+                  id="email"
+                  label="Email Address"
+                  name="email"
+                  autoComplete="email"
+                  value={email} onChange={(e) => setEmail(e.target.value)}
+                />
+             
+                <TextField
+                className='register-input'
+                  required
+                  name="password"
+                  label="Password"
+                  type="password"
+                  id="password"
+                  autoComplete="new-password"
+                  value={password} onChange={(e) => setPassword(e.target.value)}
+                />
+           
+              </div>    
+             </div>    
+       
 
 
-    	{/* <div class="input_field radio_option">
-                <h5>Gender</h5>
-                <div class="label">
-                <input type="radio" name="radiogroup1" id="rd1"/>
-              <label for="rd1">Male</label>
-              <input type="radio" name="radiogroup1" id="rd2"/>
-              <label for="rd2">Female</label>
-                </div>
-              </div> */}
-              <div class="input">
-              <Form.Label>Gender</Form.Label>
+    
+              <div class="gender">
               <Form.Select className="gender_select" onChange={(e)=>setGender(e.target.value)} value={gender}>
                 <option className="gender">----choose gender----</option>
                 <option> male</option>
@@ -81,7 +113,7 @@ const Register = () => {
       </div>
     </div>
   </div>
-</div>
+</Form>
 
   )
 }

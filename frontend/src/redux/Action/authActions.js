@@ -45,3 +45,4 @@ export const get_current = () => async (dispatch) => {
 export const logout = () => {
   return { type: LOGOUT };
 };
+

@@ -2,8 +2,8 @@ const user = require('../models/user');
 //---------------GET ALL USERS--------------//
 exports.Getusers = async (req, res) => {
     try {
-      const users = await user.find();
-      res.status(200).send({ msg: "all users", users });
+      const getusers = await user.find();
+      res.status(200).send({ msg: "all users", getusers });
       
     } catch (error) {
       res.status(500).send("couldn't get users");
@@ -33,3 +33,33 @@ exports.Getusers = async (req, res) => {
       res.status(500).send("couldn't update user");
     }
   };
+
+  //-----------UPDATE Image-----------------//
+
+  exports.updateProfileImage=async(req,res)=>{
+ 
+  try {
+  const  userimg = await user.findByIdAndUpdate(
+    req.params.id ,
+    {$set:{...req.body,profileImage:req.file.filename}}
+ 
+    )
+     res.status(200).send({msg:"image added",userimg}) 
+  } catch (error) {
+     res.status(500).send('server error') 
+  }
+}
+//-----------UPDATE Image-----------------//
+
+exports.updatecoverImage=async(req,res)=>{
+ 
+  try {
+  const  usercover = await user.findByIdAndUpdate(
+    req.params.id ,
+    {$set:{...req.body,coverImage:req.file.filename}}
+    )
+     res.status(200).send({msg:"image added",usercover}) 
+  } catch (error) {
+     res.status(500).send('server error') 
+  }
+}

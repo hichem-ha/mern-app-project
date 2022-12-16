@@ -29,7 +29,7 @@ exports.Addcomment = async (req, res) => {
       res.status(500).send(error);
     }
   };
-//-----------------
+//-----------------GET ONE COMMENT-------------//
 exports.GetOneComment = async (req, res) => {
   try {
     const getcomment = await comment.findById(req.params.id)
@@ -44,7 +44,7 @@ exports.GetOneComment = async (req, res) => {
 
 exports.Getcomments = async (req, res) => {
   try {
-    const getcomments = await comment.find()
+    const getcomments = await comment.find().populate('creatorId')
     .populate('creatorId','firstname lastname')
     res.status(200).send({ msg: "all comments", getcomments});
   } catch (error) {
@@ -67,19 +67,13 @@ exports.Getcomments = async (req, res) => {
       const editcomment = await post.findByIdAndUpdate(
         req.body.postedIn,
         {
-          $push: { comments:comment },
+          $set:{...req.body}
         },
+        // {
+        //   $push: { comments:comment },
+        // },
         { new: true }
-      )
-      .populate({ 
-       path:'postedIn',
-       select:'_id name'}
-       )
-       .populate({
-        path:'postedBy',
-        select:'firstname lastname'
-      })
-      ;
+      ) ;
       res.status(200).send({ msg: "comment updated", editcomment });
     } catch (error) {
       res.status(500).send("couldn't update comment");

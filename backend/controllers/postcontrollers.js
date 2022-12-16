@@ -4,8 +4,9 @@ const user = require('../models/user');
 
 //---------------ADD NEW POST--------------//
 exports.Addpost = async (req, res) => {
+  
   try {
-    const newpost = new post(req.body);
+    const newpost = new post({...req.body, image: req.file && req.file.filename || null  }); 
     const creator = await user.findById(req.params.id)
     if(!creator)
     {
@@ -39,7 +40,7 @@ exports.Addpost = async (req, res) => {
 exports.Getposts = async (req, res) => {
   
     try {
-      const getposts = await post.find().populate('comments').populate('createdIn','name')
+      const getposts = await post.find().populate('comments').populate('createdIn').populate('creatorId').populate('likes')
       
       res.status(200).send({ msg: "all posts", getposts });
     } catch (error) {
@@ -58,6 +59,7 @@ exports.Getposts = async (req, res) => {
   //------------DELETE POST-------------//
   exports.Deletepost = async (req, res) => {
     try {
+      
       const delepost = await post.findByIdAndDelete(req.params.id);
       res.status(200).send({ msg: "post deleted", delepost });
     } catch (error) {
@@ -67,34 +69,46 @@ exports.Getposts = async (req, res) => {
   //-----------UPDATE POST-----------------//
   exports.Updatepost = async (req, res) => {
     try {
-      const editpost = await post.findByIdAndUpdate(
+      const getposts  = await post.findByIdAndUpdate(
         req.params.id,
         {
-          $set: { ...req.body },
+          $set: {...req.body, image: req.file && req.file.filename || null },
         },
         { new: true }
       );
-      res.status(200).send({ msg: "post updated", editpost });
+      res.status(200).send({ msg: "post updated", getposts  });
     } catch (error) {
       res.status(500).send("couldn't update post");
     }
   };
  //-----------LIKES POST----------------//
- exports.Likespost = async (req, res) => {
+ exports.Likepost = async (req, res) => {
+  
   try {
-    const like = await post.findById(req.params.id)
-    if(!like)
-    {
-      res.status(400).send("couldn't likes post");
-    }
-    const likespost = await post.findByIdAndUpdate(
-      req.params.id,
+    const getposts = await post.findByIdAndUpdate(
+      req.body.postId,
       {
-        likeCount:post.likeCount +1
+       $push:{likes:req.user._id}
       },
       { new: true }
     );
-    res.status(200).send({ msg: "post updated", likespost });
+    res.status(200).send({ msg: "post updated", getposts });
+  } catch (error) {
+    res.status(500).send("couldn't update post");
+  }
+};
+ //-----------UNLIKES POST----------------//
+ exports.Unlikepost = async (req, res) => {
+  
+  try {
+    const getposts = await post.findByIdAndUpdate(
+      req.body.postId,
+      {
+       $pull:{likes:req.user._id}
+      },
+      { new: true }
+    );
+    res.status(200).send({ msg: "post updated", getposts });
   } catch (error) {
     res.status(500).send("couldn't update post");
   }

@@ -1,5 +1,5 @@
 import axios from "axios";
-import { ADD_POST, GET_ONE_POST, GET_POSTS, LIKES_POST, TOGGLE_FALSE, TOGGLE_TRUE } from "../ActionTypes/postTypes";
+import {  GET_ONE_POST, GET_POSTS} from "../ActionTypes/postTypes";
 //-----------GET POSTS----------------//
 export const getposts = () => async (dispatch) => {
   const config = {
@@ -16,33 +16,40 @@ export const getposts = () => async (dispatch) => {
     }
   };
   //-----------ADD POST----------------//
-export const addpost = (newpost, id,id2) => async (dispatch) => {
-    
+export const addpost = (data,id,id2) => async (dispatch,) => {
+
+ 
+  
     try {
-      const res = await axios.post(`/users/addpost/${id}/community/${id2}`,newpost ,id ,id2);
+      await axios.post(`/users/addpost/${id}/community/${id2}`,data,id,id2);
       dispatch(getposts());
     } catch (error) {
    console.log(error)
     }
   };
   //-----------LIKES POST----------------//
-  export const Likespost = (id) => async (dispatch) => {
-    const config = {
-      headers: {
-        token: localStorage.getItem("token"),
-      },
-    };
+  export const Likespost = (id,id2,data) => async (dispatch) => {
     try {
-      const res = await axios.patch(`/users/likespost/${id}`, config,id);
-      dispatch({ type: LIKES_POST, payload: res.data });
+       await axios.post(`/users/likepost/${id}/post/${id2}`,data);
+      dispatch(getposts());
     } catch (error) {
    console.log(error)
     }
   };
+    //-----------LIKES POST----------------//
+    export const Unlikespost = (id) => async (dispatch) => {
+      try {
+         await axios.delete(`/users/unlikepost/${id}`);
+        dispatch(getposts());
+      } catch (error) {
+     console.log(error)
+      }
+    };
   //-----------DELETE POST----------------//
   export const deletePost = (id) => async (dispatch) => {
+    
     try {
-      const res = await axios.delete(`/users/deletepost/${id}`);
+      await axios.delete(`/users/deletepost/${id}`);
       dispatch(getposts());
     } catch (error) {
    console.log(error)
@@ -58,14 +65,13 @@ export const addpost = (newpost, id,id2) => async (dispatch) => {
     }
   };
   //-----------UPDATE POST-------------//
-  export const toggleTure=()=>{
-    return {
-      type:TOGGLE_TRUE,
+  export const edit_post=(data,id)=>async(dispatch)=>{
+    try {
+       await axios.put(`/users/editpost/${id}`,data)
+      dispatch(getposts())
+    } catch (error) {
+      console.log(error)
     }
   }
-  export const toggleFalse=()=>{
-    return {
-      type:TOGGLE_FALSE,
-    }
-  }
+
 

@@ -1,9 +1,9 @@
-import {REGISTER,LOGIN,GET_CURRENT,LOGOUT,FAIL} from "../ActionTypes/auhTypes";
+import {REGISTER,LOGIN,GET_CURRENT,LOGOUT,FAIL, GET_USERS} from "../ActionTypes/auhTypes";
 
 const initialState = {
     user: {},
     auth: false,
-   errors:[] 
+   errors:[]
  };
 
  const authReducer = (state = initialState, { type, payload }) => {
@@ -21,6 +21,7 @@ const initialState = {
       return { ...state, user: null, auth: false };
     case FAIL:
       return { ...state, errors: payload.errors };
+
 
     default:
       return state;

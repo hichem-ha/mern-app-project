@@ -33,7 +33,7 @@ exports.Getcommunities = async (req, res) => {
   //-----------GET ONE COMMUNITY-----------//
   exports.GetOnecommunity = async (req, res) => {
     try {
-      const getcommunity = await community.findById(req.params.id).populate('posts');
+      const getcommunity = await community.findById(req.params.id).populate('posts').populate('createdIn').populate('creatorId');
       res.status(200).send({ msg: "one community", getcommunity });
     } catch (error) {
       res.status(500).send("couldn't get community ");
@@ -45,11 +45,7 @@ exports.Getcommunities = async (req, res) => {
       
         const delecommunity = await community.findByIdAndDelete(req.params.id);
         res.status(200).send({ msg: "community deleted", delecommunity });
-      
-       
-     
-      // const delecommunity = await community.findByIdAndDelete(req.params.id);
-      // res.status(200).send({ msg: "community deleted", delecommunity });
+    
     } catch (error) {
       res.status(500).send("could not delete community");
     }
@@ -72,3 +68,32 @@ exports.Getcommunities = async (req, res) => {
       res.status(500).send("couldn't update community");
     }
   };
+    //-----------UPDATE Image-----------------//
+
+    exports.updateComProfileImage=async(req,res)=>{
+ 
+      try {
+      const  comimg = await community.findByIdAndUpdate(
+        req.params.id ,
+        {$set:{...req.body,profileImage:req.file.filename}}
+     
+        )
+         res.status(200).send({msg:"image added",comimg}) 
+      } catch (error) {
+         res.status(500).send('server error') 
+      }
+    }
+    //-----------UPDATE Image-----------------//
+    
+    exports.updateComcoverImage=async(req,res)=>{
+     
+      try {
+      const  usercover = await community.findByIdAndUpdate(
+        req.params.id ,
+        {$set:{...req.body,coverImage:req.file.filename}}
+        )
+         res.status(200).send({msg:"image added",usercover}) 
+      } catch (error) {
+         res.status(500).send('server error') 
+      }
+    }

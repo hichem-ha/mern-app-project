@@ -1,39 +1,60 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import Avatar from '@mui/material/Avatar';
 import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
 import CalendarViewDayOutlinedIcon from '@mui/icons-material/CalendarViewDayOutlined';
 import RocketIcon from '@mui/icons-material/Rocket';
 import Postart from './Postart';
-import { Button, Form, Modal } from 'react-bootstrap';
-import { getcommunities } from '../redux/Action/communityActions';
+import {  Form, Modal } from 'react-bootstrap';
+import { getcommunities, getOneCommunity } from '../redux/Action/communityActions';
 import { useDispatch, useSelector } from 'react-redux';
-import { addpost } from '../redux/Action/postActions';
-import { useNavigate } from 'react-router';
+import { addpost, getposts } from '../redux/Action/postActions';
+import Button from '@mui/material/Button';
 
 
-const Home = () => {
+
+
+
+const Home = ({name,communityId}) => {
   const [show, setShow] = useState(false);
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
-  const Navigate =useNavigate() 
 
   const [community,setCommunity] = useState('')
+   const [image,setImage] = useState('')
   const [title ,setTitle]=useState('');
   const [body,setBody]= useState('');
-  const handlePost=(e)=>{
-    e.preventDefault();
-    dispatch(addpost({community,title,body}));
+  const user = useSelector((state)=>state.authReducer.user);
+  const posts = useSelector((state) => state.postReducer.posts);
+  const communities = useSelector((state) => state.communityReducer.communities);
+  
+ const refImage=useRef()
+  const handlePost=()=> {
+    const data=new FormData ()
+    data.append("image",image)
+    data.append("community",community)
+    data.append("title",title)
+    data.append("body",body)
+    dispatch(addpost((data),user._id,community));
+    setCommunity('')
+    setTitle('')
+    setBody('')
+    setImage('')
     handleClose()
-   
   }
-  console.log(community,title,body)
+
+
 const dispatch= useDispatch()
   useEffect(()=>{
-    dispatch(getcommunities())
+    dispatch(getcommunities(),getposts())
      },[])
-     const communities = useSelector((state) => state.communityReducer.communities);
-   
+     useEffect(()=>{
+      dispatch(getOneCommunity(communityId))
+       },[])
+
+     
+ 
+    
   return (
     <div>
    <div className='post-border'>
@@ -43,15 +64,15 @@ const dispatch= useDispatch()
         <Modal.Header closeButton>
           <Modal.Title>Create post </Modal.Title>
         </Modal.Header>
-        <Form.Select className='post-select'onChange={(e)=>setCommunity(e.target.value)} value={community} >
+        <Form.Select className='post-select' onChange={(e)=>setCommunity(e.target.value)}  >
 
         <option className="">----choose community----</option>
-        {communities?.map((community)=><option > {community.name}</option>) } 
+        {communities?.map((community)=><option value={community._id}>{community.name}</option>) } 
         </Form.Select>
-
-         
-         <textarea className='title-post' placeholder='title' value={title} onChange={(e)=>setTitle(e.target.value)}></textarea>
-      <textarea className='body-post' placeholder='body post' value={body} onChange={(e)=>setBody(e.target.value)}></textarea>
+        <Button onClick={()=>refImage.current.click()} >drop image</Button>
+         <input className='choose_file'   type='file' ref={refImage} hidden onChange={(e)=>setImage(e.target.files[0])}  />
+         <textarea className='title-post' placeholder='title'  onChange={(e)=>setTitle(e.target.value)}></textarea>
+         <textarea className='body-post' placeholder='body post'  onChange={(e)=>setBody(e.target.value)}></textarea>
         <Modal.Footer>
           <Button className='post-btn' variant="primary" onClick={handlePost}>
             Post
@@ -61,14 +82,13 @@ const dispatch= useDispatch()
    </div>
   
    </div> 
-   <Avatar className='post-avatar'/>
+   <Avatar className='post-avatar' src={user?.profileImage ? `uploads/${user?.profileImage}`:"/broken-image.jpg"}/>
    <div className='filters'>
-    <p className='filter'><LocalFireDepartmentIcon /> Hot</p>
-    <p className='filter'><CalendarViewDayOutlinedIcon/>New</p>
-    <p className='filter'><RocketIcon/>Top</p>
+    <Button className='filter' ><LocalFireDepartmentIcon /> Hot</Button>
+    <Button className='filter'><CalendarViewDayOutlinedIcon/>New</Button>
+    <Button className='filter'><RocketIcon/>Top</Button>
    </div>
-
-   <Postart/>
+   {posts.map((post)=>communityId===post.createdIn._id  ?<div><Postart post={post}/></div>:communityId==="----choose community----"  ? <div><Postart post={post}/></div>: null)}
   </div>
   )
 }

@@ -48,7 +48,7 @@ exports.Login = async(req,res) => {
         //check jwt
         const payload={id : founduser._id };
      
-        const token = jwt.sign(payload,process.env.secretkey,founduser.isAdmin);
+        const token = jwt.sign(payload,process.env.secretkey);
       res.status(200).send({msg:'Loging With Success ', founduser , token});
    
 

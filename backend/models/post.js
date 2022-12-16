@@ -1,4 +1,5 @@
-const mongoose = require ('mongoose')
+const mongoose = require ('mongoose');
+const { number } = require('yargs');
 const post= new mongoose.Schema({
       creatorId:{
         type:mongoose.Schema.Types.ObjectId,
@@ -10,33 +11,27 @@ const post= new mongoose.Schema({
       },
     
       title:{
-        type:String,
-        required:true,
-    },
-    community:{
-      type:String,
-      required:true
-    },
+        type:String
+          },
 
     body:{
         type:String,
         required:true,
     },
-    // image:{
-    //   type:String
-    // },
+    image:{
+      type:String
+    },
     comments :[{
       type:mongoose.Schema.ObjectId,
       ref:'comment'
         }],
 
-    //----------------------
-     
+    likes :[{ 
+    type:mongoose.Schema.ObjectId,
+      ref:'like'
+        }],
     
-    // likeCount:{ 
-    //   type:Number, 
-    //   default:0
-    // },
+  
      createdAt:{
         type:Date,
         default:Date.now
